@@ -110,9 +110,10 @@ export const Counter = ({
                 {settingsOn &&
                     <SettingsSection max={max} setMax={setMax} start={start} setStart={setStart} error={error}/>}
                 {!settingsOn && <div className={s.number} style={count == max ? maxStyle : {}}>{count}</div>}
-                <FlexWrapper direction={"row"} gap={'20px'} padding={"10px 0"} >
-                    {!settingsOn && <Button action={increment} title={'increment'} disabledProp={disabledIncrement}></Button>}
-                    {!settingsOn &&  <Button action={setCount0} title={'reset'} disabledProp={disabledReset}></Button>}
+                <FlexWrapper direction={"row"} gap={'20px'} padding={"10px 0"}>
+                    {!settingsOn &&
+                        <Button action={increment} title={'increment'} disabledProp={disabledIncrement}></Button>}
+                    {!settingsOn && <Button action={setCount0} title={'reset'} disabledProp={disabledReset}></Button>}
                     <Button title={"set"} action={setValues}/>
                 </FlexWrapper>
 

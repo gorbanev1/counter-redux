@@ -16,10 +16,13 @@ function App() {
     return (
         <>
             <FlexWrapper direction='row' gap={"25px"} border={"none"}>
-                <Settings count={count} setCount={setCount} setMaxCounterValue={setMaxCounterValue}
+                {false&&<Settings count={count}
+                          setCount={setCount}
+                          setMaxCounterValue={setMaxCounterValue}
                           setStartCounterValue={setStartCounterValue}
                           setDisabledIncrement={setDisabledIncrement}
-                          setDisabledReset={setDisabledReset}></Settings>
+                          setDisabledReset={setDisabledReset}
+                />}
                 <Counter count={count} setCount={setCount}
                          maxValue={maxCounterValue}
                          startValue={startCounterValue}
