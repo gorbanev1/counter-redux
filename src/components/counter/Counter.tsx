@@ -5,20 +5,26 @@ import s from './Counter.module.css'
 import {FlexWrapper} from "../flexWrapper/FlexWrapper.tsx";
 import {useEffect} from "react";
 import {SettingsSection} from "../settings/settingsSection.tsx";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    setCountAC,
+    setDisableIncrementAC,
+    setDisableResetAC,
+    setMaxAC,
+    setMinAC, setSettingsOnOffAC
+} from "../../app/state/count-reducer.ts";
+import type {RootState} from "../../app/state/store.ts";
+import type {StateType} from "../../app/App.tsx";
 
 
 type Counter = {
-    count: number
-    setCount: (count: number) => void
+    count?: number
     maxValue?: number
     startValue?: number
-    setDisabledIncrement: (v: boolean) => void
-    setDisabledReset: (v: boolean) => void
-    disabledIncrement: boolean
-    disabledReset: boolean
-    setMaxCounterValue: (v: number) => void
-    settingsOn: boolean
-    setSettingsOn: (s: boolean) => void
+    disabledIncrement?: boolean
+    disabledReset?: boolean
+    settingsOn?: boolean
+    setSettingsOn?: (s: boolean) => void
 
 
 };
@@ -31,80 +37,86 @@ const maxStyle = {
     color: 'red',
     fontSize: '250%'
 }
-export const Counter = ({
-                            count,
-                            setCount,
-                            setDisabledIncrement,
-                            disabledReset,
-                            setDisabledReset,
-                            disabledIncrement,
-                            setMaxCounterValue,
-                            settingsOn,
-                            setSettingsOn,
-                        }: Counter) => {
+export const Counter = () => {
+/*
         const [max, setMax] = React.useState<number>(0);
         const [start, setStart] = React.useState<number>(0);
+        */
+
         const [error, setError] = React.useState<string | null>('');
+
+        const dispatch = useDispatch()
+        const state = useSelector<RootState, StateType>(state => state.counter)
+        let max=state.maxValue
+        let start=state.minValue
+        const disabledReset=state.disabledReset
+        const disabledIncrement=state.disabledIncrement
+        const settingsOn=state.settingsOn
+        let count = state.count
 
         useEffect(() => {
             if (start > max - 1) {
-                setStart(max - 1)
-                if (max === 0) setStart(0)
+                dispatch(setMinAC(max - 1))
+                if (max === 0) dispatch(setMinAC(0))
             }
         }, [start, max])
 
         useEffect(() => {
-
-            const start = localStorage.getItem("startCount")
-            const max = localStorage.getItem("maxCount")
             if (start && max) {
-                setStart(JSON.parse(start))
-                setMax(JSON.parse(max))
-                setCount(JSON.parse(start))
+                dispatch(setMinAC(JSON.parse(start)))
+                dispatch(setMaxAC(JSON.parse(max)))
+                //dispatch(setMinAC(JSON.parse(start)))
+                // dispatch(setMaxAC( JSON.parse(max)))
+                dispatch(setCountAC(JSON.parse(start)))
             }
         }, [])
         useEffect(() => {
             if (start && max) {
-                setMaxCounterValue(max)
-                setCount(start)
+                dispatch(setMaxAC(max))
+                dispatch(setCountAC(start))
             }
         }, [])
 
         const increment = () => {
             console.log(start, max)
             if (count < max) {
-                setCount(count + 1)
+                dispatch(setCountAC(count + 1))
 
             }
             if (count === max - 1) {
-                setDisabledIncrement(true)
-                setDisabledReset(false)
+                dispatch(setDisableIncrementAC(true))
+                dispatch(setDisableResetAC(false))
             }
 
         }
 
         function setCount0() {
-            setCount(start)
-            setDisabledIncrement(false)
-            setDisabledReset(true)
+            dispatch(setCountAC(start))
+            dispatch(setDisableIncrementAC(false))
+            dispatch(setDisableResetAC(true))
         }
 
         function setValues() {
-            setSettingsOn(!settingsOn)
+            dispatch(setSettingsOnOffAC(!settingsOn))
             if (max > start) {
-                setMax(max)
-                setStart(start)
-                setCount(start)
-                setDisabledReset(true)
-                setDisabledIncrement(false)
-                localStorage.setItem("startCount", JSON.stringify(start))
-                localStorage.setItem("maxCount", JSON.stringify(max))
+
+                dispatch(setMaxAC(max))
+                dispatch(setMinAC(start))
+                dispatch(setCountAC(start))
+                dispatch(setDisableResetAC(true))
+                dispatch(setDisableIncrementAC(false))
                 setError(null)
+
             } else {
                 setError("Максимальное значение меньше стартового")
             }
         }
-
+        const setMax=(max)=>{
+            dispatch(setMaxAC(max))
+        }
+        const setStart=(max)=>{
+            dispatch(setMinAC(max))
+        }
         return (
             <div className={s.counter}>
                 {settingsOn &&
